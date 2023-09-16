@@ -1,0 +1,19 @@
+name: Push to ECR
+
+run-name: Build the Container and Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          docker build --tag ${{ secrets.DOCKERHUB_NAME }}/test-repository:latest --file ./Dockerfile ./
+          docker login -u ${{ secrets.DOCKERHUB_EMAIL }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+          docker push ${{ secrets.DOCKERHUB_NAME }}/test-repository:latest
+          docker logout
